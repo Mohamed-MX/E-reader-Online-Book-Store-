@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/chipCategory"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:textSize="14sp"
+    android:textStyle="bold"
+    android:minHeight="44dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    app:chipCornerRadius="22dp"
+    app:rippleColor="@color/primary_orange"
+    app:checkedIconEnabled="false"
+    app:chipMinHeight="44dp"
+    style="@style/Widget.MaterialComponents.Chip.Choice" />
+

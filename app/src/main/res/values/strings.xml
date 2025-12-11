@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">E-Reader</string>
+    
+    <!-- Auth -->
+    <string name="login">Login</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="dont_have_account">Don\'t have an account? Sign Up</string>
+    <string name="already_have_account">Already have an account? Login</string>
+    <string name="login_success">Login Successful</string>
+    <string name="login_failed">Invalid Credentials</string>
+    <string name="signup_success">Account Created</string>
+    <string name="signup_failed">Registration Failed</string>
+    <string name="empty_fields">Please fill all fields</string>
+
+    <!-- Home -->
+    <string name="home_title">Book Store</string>
+    <string name="in_stock">In Stock</string>
+    <string name="out_of_stock">Out of Stock</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="added_to_cart">Added to Cart</string>
+    <string name="added_to_favorites">Added to Favorites</string>
+    <string name="free_shipping_offer">Free Shipping on your first order!</string>
+    <string name="filter_all">All</string>
+    <string name="category_fiction">Fiction</string>
+    <string name="category_self_help">Self Help</string>
+    <string name="category_scientific">Scientific</string>
+    <string name="category_history">History</string>
+
+    <!-- Cart & Favorites -->
+    <string name="cart_title">My Cart</string>
+    <string name="favorites_title">My Favorites</string>
+    <string name="empty_cart">Your cart is empty</string>
+    <string name="empty_favorites">No favorites yet</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="dark_mode_desc">Switch between light and dark themes</string>
+    <string name="account_label">Account</string>
+    <string name="logout">Logout</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_cart">Cart</string>
+    <string name="nav_favorites">Favorites</string>
+    <string name="nav_settings">Settings</string>
+</resources>
