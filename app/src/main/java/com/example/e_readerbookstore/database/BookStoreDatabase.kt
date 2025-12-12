@@ -6,14 +6,13 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.e_readerbookstore.R
 import com.example.e_readerbookstore.model.Book
-import com.example.e_readerbookstore.model.CartItem
 import com.example.e_readerbookstore.model.User
 
-class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class BookStoreDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_NAME = "EReader.db"
-        private const val DATABASE_VERSION = 2 // Incremented version
+        private const val DATABASE_VERSION = 3 // Incremented to include new seeded book
 
         // Users Table
         const val TABLE_USERS = "users"
@@ -75,6 +74,22 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         onCreate(db)
     }
 
+    /**
+     * Ensure the books table is populated. Useful for users coming from an
+     * empty/cleared database so the app always has data to show.
+     */
+    private fun ensureBooksSeeded(db: SQLiteDatabase) {
+        val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_BOOKS", null)
+        var count = 0
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0)
+        }
+        cursor.close()
+        if (count == 0) {
+            seedBooks(db)
+        }
+    }
+
     private fun seedBooks(db: SQLiteDatabase) {
         val books = listOf(
             // Self Help
@@ -84,6 +99,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             Book(title = "The 48 Laws of Power", author = "Robert Greene", imageUrl = "https://covers.openlibrary.org/b/isbn/9780140280197-L.jpg", isInStock = true, price = 20.0, category = "Self Help"),
             Book(title = "The Subtle Art of Not Giving a F*ck", author = "Mark Manson", imageUrl = "https://covers.openlibrary.org/b/isbn/9780062457714-L.jpg", isInStock = true, price = 18.0, category = "Self Help"),
             Book(title = "The Art of War", author = "Sun Tzu", imageUrl = "https://covers.openlibrary.org/b/isbn/9781590302255-L.jpg", isInStock = true, price = 11.0, category = "Self Help"),
+            Book(title = "The Lean Startup", author = "Eric Ries", imageUrl = "https://covers.openlibrary.org/b/isbn/9780307887894-L.jpg", isInStock = true, price = 19.0, category = "Self Help"),
             Book(title = "Rich Dad Poor Dad", author = "Robert Kiyosaki", imageUrl = "https://covers.openlibrary.org/b/isbn/9781612680194-L.jpg", isInStock = false, price = 0.0, category = "Self Help"), // Out of stock
             Book(title = "The Art of Seduction", author = "Robert Greene", imageUrl = "https://covers.openlibrary.org/b/isbn/9780142001196-L.jpg", isInStock = true, price = 12.0, category = "Self Help"),
 
@@ -107,7 +123,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             Book(title = "The Rise and Fall of the Third Reich", author = "William L. Shirer", imageUrl = "https://covers.openlibrary.org/b/isbn/9780671624202-L.jpg", isInStock = true, price = 25.0, category = "History"),
             Book(title = "A People's History of the United States", author = "Howard Zinn", imageUrl = "https://covers.openlibrary.org/b/isbn/9780060838652-L.jpg", isInStock = true, price = 22.0, category = "History"),
             Book(title = "The History of the Ancient World", author = "Susan Wise Bauer", imageUrl = "https://covers.openlibrary.org/b/isbn/9780393059748-L.jpg", isInStock = true, price = 21.0, category = "History"),
-            Book(title = "The Silk Roads", author = "Peter Frankopan", imageUrl = "https://covers.openlibrary.org/b/isbn/9781101912379-L.jpg", isInStock = true, price = 23.0, category = "History")
+            Book(title = "The Silk Roads", author = "Peter Frankopan", imageUrl = "https://covers.openlibrary.org/b/isbn/9781408886757-L.jpg", isInStock = true, price = 23.0, category = "History")
         )
 
         for (book in books) {
@@ -167,10 +183,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun getBooksByCategory(category: String?): List<Book> {
         val books = ArrayList<Book>()
         val db = this.readableDatabase
+        ensureBooksSeeded(db)
         val query = if (category == null || category == "All") {
             "SELECT * FROM $TABLE_BOOKS"
         } else {
-            "SELECT * FROM $TABLE_BOOKS WHERE $COLUMN_CATEGORY = ?"
+            "SELECT * FROM $TABLE_BOOKS WHERE LOWER($COLUMN_CATEGORY) = LOWER(?)"
         }
         val cursor = if (category == null || category == "All") {
             db.rawQuery(query, null)
@@ -196,6 +213,21 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         cursor.close()
         db.close()
         return books
+    }
+
+    fun getCategories(): List<String> {
+        val categories = ArrayList<String>()
+        val db = this.readableDatabase
+        ensureBooksSeeded(db)
+        val cursor = db.rawQuery("SELECT DISTINCT $COLUMN_CATEGORY FROM $TABLE_BOOKS ORDER BY $COLUMN_CATEGORY", null)
+        if (cursor.moveToFirst()) {
+            do {
+                categories.add(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY)))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return categories
     }
 
     // Cart/Favorite Operations

@@ -11,16 +11,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.e_readerbookstore.R
-import com.example.e_readerbookstore.database.DatabaseHelper
+import com.example.e_readerbookstore.database.BookStoreDatabase
 import com.example.e_readerbookstore.model.CartItem
 
 class HomeFragment : Fragment() {
 
-    private lateinit var dbHelper: DatabaseHelper
+    private lateinit var dbHelper: BookStoreDatabase
     private lateinit var adapter: BookAdapter
     private lateinit var categoryAdapter: CategoryFilterAdapter
     private var userId: Int = -1
-    private var currentCategory: String = "All"
+    private var currentCategory: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,13 +31,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dbHelper = DatabaseHelper(requireContext())
+        dbHelper = BookStoreDatabase(requireContext())
         
         val sharedPref = activity?.getSharedPreferences("EReaderPrefs", Context.MODE_PRIVATE)
         userId = sharedPref?.getInt("USER_ID", -1) ?: -1
 
-        // Setup category filters
-        val categories = listOf("All", "Fiction", "Self Help", "Scientific", "History")
+        // Build categories dynamically from DB so filter labels always match stored values
+        val categoriesFromDb = dbHelper.getCategories()
+        val categories = listOf(getString(R.string.filter_all)) + categoriesFromDb
+        currentCategory = categories.firstOrNull() ?: getString(R.string.filter_all)
         val rvCategoryFilters = view.findViewById<RecyclerView>(R.id.rvCategoryFilters)
         rvCategoryFilters.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         categoryAdapter = CategoryFilterAdapter(categories) { category ->
@@ -78,11 +80,11 @@ class HomeFragment : Fragment() {
         )
         rvBooks.adapter = adapter
         
-        loadBooks("All")
+        loadBooks(currentCategory)
     }
 
     private fun loadBooks(category: String = currentCategory) {
-        val books = if (category == "All") {
+        val books = if (category.equals(getString(R.string.filter_all), ignoreCase = true)) {
             dbHelper.getAllBooks()
         } else {
             dbHelper.getBooksByCategory(category)

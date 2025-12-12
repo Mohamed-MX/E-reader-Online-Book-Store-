@@ -12,12 +12,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.e_readerbookstore.MainActivity
 import com.example.e_readerbookstore.R
-import com.example.e_readerbookstore.database.DatabaseHelper
+import com.example.e_readerbookstore.database.BookStoreDatabase
 import com.example.e_readerbookstore.ui.home.HomeFragment
 
 class LoginFragment : Fragment() {
 
-    private lateinit var dbHelper: DatabaseHelper
+    private lateinit var dbHelper: BookStoreDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +28,7 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dbHelper = DatabaseHelper(requireContext())
+        dbHelper = BookStoreDatabase(requireContext())
 
         val etUsername = view.findViewById<EditText>(R.id.etUsername)
         val etPassword = view.findViewById<EditText>(R.id.etPassword)

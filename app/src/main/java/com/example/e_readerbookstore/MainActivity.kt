@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.e_readerbookstore.ui.auth.LoginFragment
+import com.example.e_readerbookstore.ui.auth.SignUpFragment
 import com.example.e_readerbookstore.ui.cart.CartFragment
 import com.example.e_readerbookstore.ui.home.HomeFragment
 import com.example.e_readerbookstore.ui.settings.SettingsFragment
@@ -49,18 +50,18 @@ class MainActivity : AppCompatActivity() {
 
         // Restore bottom nav visibility state after activity recreation
         val userId = sharedPref.getInt("USER_ID", -1)
-        val savedBottomNavVisible = sharedPref.getBoolean("BOTTOM_NAV_VISIBLE", false)
-        
-        // If user is logged in, bottom nav should always be visible
-        // Otherwise, use saved state (for theme changes)
-        if (userId != -1) {
-            setBottomNavVisibility(true)
-        } else {
-            setBottomNavVisibility(savedBottomNavVisible)
-        }
+        val isLoggedIn = userId != -1
+
+        // Show bottom nav only for authenticated users
+        setBottomNavVisibility(isLoggedIn)
 
         if (savedInstanceState == null) {
-            loadFragment(LoginFragment())
+            if (isLoggedIn) {
+                bottomNav.selectedItemId = R.id.nav_home
+                loadFragment(HomeFragment())
+            } else {
+                loadFragment(LoginFragment())
+            }
         }
     }
 
@@ -78,6 +79,11 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
+
+        // Hide nav bar on auth screens to prevent showing it over login/signup
+        if (fragment is LoginFragment || fragment is SignUpFragment) {
+            setBottomNavVisibility(false)
+        }
     }
 
     fun navigateToHome(fragment: Fragment) {

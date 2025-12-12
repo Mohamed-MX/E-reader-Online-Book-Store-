@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.example.e_readerbookstore.R
-import com.example.e_readerbookstore.database.DatabaseHelper
+import com.example.e_readerbookstore.database.BookStoreDatabase
 import com.example.e_readerbookstore.model.CartItem
 
 class CartFragment : Fragment() {
 
-    private lateinit var dbHelper: DatabaseHelper
+    private lateinit var dbHelper: BookStoreDatabase
     private lateinit var adapter: CartAdapter
     private var userId: Int = -1
     private var currentType = CartItem.TYPE_CART
@@ -35,7 +35,7 @@ class CartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dbHelper = DatabaseHelper(requireContext())
+        dbHelper = BookStoreDatabase(requireContext())
         
         val sharedPref = activity?.getSharedPreferences("EReaderPrefs", Context.MODE_PRIVATE)
         userId = sharedPref?.getInt("USER_ID", -1) ?: -1
