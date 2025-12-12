@@ -94,14 +94,8 @@ app/
 (neb2a n7ot screenshots hena ba2a )
 - Login Screen
 - Home / Book Grid
-- Cart Screen
+- Cart and Favorite Screen
 - Settings Screen
-
-add images keda:
-```markdown
-![Login Screen](docs/screenshots/login.png)
-![Home Screen](docs/screenshots/home.png)
-```
 
 ---
 
@@ -122,3 +116,4 @@ Open the project in Android Studio, sync Gradle, and run on an emulator or devic
 - Android SDK (min 24, target 34)
 
 ---
+
